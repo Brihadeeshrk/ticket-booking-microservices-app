@@ -1,15 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
 import { body, validationResult } from "express-validator";
+import { BadRequestError } from "../errors/bad-request-error";
 import { RequestValidationError } from "../errors/request-validation-error";
-import { DatabaseConnectionError } from "../errors/database-connection-error";
+import { User } from "../models/user";
 
 const router = express.Router();
-
-interface Body {
-  email: string;
-  password: string;
-}
 
 router.post(
   "/api/users/signup",
@@ -27,12 +23,18 @@ router.post(
       throw new RequestValidationError(errors.array());
     }
 
-    const { email, password } = req.body as Body;
+    const { email, password } = req.body;
 
-    console.log("Creating a new user ...");
-    throw new DatabaseConnectionError();
+    const existingUser = await User.findOne({ email });
 
-    res.send({});
+    if (existingUser) {
+      throw new BadRequestError("This email is already in use");
+    }
+
+    const user = User.build({ email, password });
+    await user.save();
+
+    res.status(201).send(user);
   }
 );
 
