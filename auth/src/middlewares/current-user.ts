@@ -15,7 +15,7 @@ declare global {
 }
 
 export function currentUser(req: Request, res: Response, next: NextFunction) {
-  if (req.session?.jwt) {
+  if (!req.session?.jwt) {
     return next();
   }
 
