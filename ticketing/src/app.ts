@@ -6,6 +6,8 @@ import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUser } from "@brktickets/common";
 import { newTicketRouter } from "./routes/new";
 import { showTicketRouter } from "./routes/show";
+import { indexTicketRouter } from "./routes";
+import { updateTicketRouter } from "./routes/update";
 
 const app = express();
 app.set("trust proxy", true);
@@ -19,6 +21,8 @@ app.use(
 app.use(currentUser);
 app.use(newTicketRouter);
 app.use(showTicketRouter);
+app.use(indexTicketRouter);
+app.use(updateTicketRouter);
 
 app.all("*", () => {
   throw new NotFoundError();
@@ -28,8 +32,5 @@ app.use(errorHandler);
 export { app };
 
 /**
-GET /api/tickets - get all tix
-GET /api/tickets/:id - get a single ticket
-POST /api/tickets - {title, price} - create a new ticket
 PUT /api/tickets/:id - {title, price} - update a ticket
  */
