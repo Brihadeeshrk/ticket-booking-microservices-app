@@ -1,0 +1,30 @@
+import { randomBytes } from "crypto";
+import nats from "node-nats-streaming";
+
+// we're going to use this nats library to create a client that will connect to the nats server
+// and exchange info
+
+// in all the docs and all, they call the client a stan
+
+console.clear();
+
+const stan = nats.connect("ticketing", randomBytes(4).toString("hex"), {
+  url: "http://localhost:4222",
+});
+
+stan.on("connect", () => {
+  console.log("🚀 Publisher connected to NATS");
+
+  const data = JSON.stringify({
+    id: 122,
+    title: "title",
+    price: 10,
+  });
+
+  stan.publish("ticket:created", data, (err) => {
+    if (err) {
+      return console.log("🚨 Error publishing message", err);
+    }
+    console.log("🚀 Message published");
+  });
+});
