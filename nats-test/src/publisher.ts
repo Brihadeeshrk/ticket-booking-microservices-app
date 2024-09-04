@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto";
 import nats from "node-nats-streaming";
+import { TicketCreatedPublisher } from "./events/ticket-created-publisher";
 
 // we're going to use this nats library to create a client that will connect to the nats server
 // and exchange info
@@ -12,19 +13,25 @@ const stan = nats.connect("ticketing", randomBytes(4).toString("hex"), {
   url: "http://localhost:4222",
 });
 
-stan.on("connect", () => {
+stan.on("connect", async () => {
   console.log("🚀 Publisher connected to NATS");
 
-  const data = JSON.stringify({
-    id: 122,
-    title: "title",
-    price: 10,
-  });
+  // const data = JSON.stringify({
+  //   id: 122,
+  //   title: "title",
+  //   price: 10,
+  // });
 
-  stan.publish("ticket:created", data, (err) => {
-    if (err) {
-      return console.log("🚨 Error publishing message", err);
-    }
-    console.log("🚀 Message published");
+  // stan.publish("ticket:created", data, (err) => {
+  //   if (err) {
+  //     return console.log("🚨 Error publishing message", err);
+  //   }
+  //   console.log("🚀 Message published");
+  // });
+  const publisher = new TicketCreatedPublisher(stan);
+  await publisher.publish({
+    id: "123",
+    title: "concert 11",
+    price: 20,
   });
 });

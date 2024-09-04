@@ -17,31 +17,6 @@ stan.on("connect", () => {
   });
 
   new TicketCreatedListener(stan).listen();
-
-  // const options = stan
-  //   .subscriptionOptions()
-  //   .setManualAckMode(true)
-  //   .setDeliverAllAvailable()
-  //   .setDurableName("orders-service");
-
-  // const subscription = stan.subscribe(
-  //   "ticket:created",
-  //   "orders-service-queue-group",
-  //   options
-  // );
-
-  // subscription.on("message", (msg: Message) => {
-  //   const data = msg.getData();
-
-  //   if (typeof data === "string") {
-  //     console.log(
-  //       `Received event #${msg.getSequence()} on subject: ${msg.getSubject()}`
-  //     );
-  //     console.log(data);
-  //   }
-
-  //   msg.ack();
-  // });
 });
 
 // if we get a sigint or sigterm, we're going to close the connection to nats
