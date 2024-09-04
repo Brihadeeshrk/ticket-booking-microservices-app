@@ -16,18 +16,6 @@ const stan = nats.connect("ticketing", randomBytes(4).toString("hex"), {
 stan.on("connect", async () => {
   console.log("🚀 Publisher connected to NATS");
 
-  // const data = JSON.stringify({
-  //   id: 122,
-  //   title: "title",
-  //   price: 10,
-  // });
-
-  // stan.publish("ticket:created", data, (err) => {
-  //   if (err) {
-  //     return console.log("🚨 Error publishing message", err);
-  //   }
-  //   console.log("🚀 Message published");
-  // });
   const publisher = new TicketCreatedPublisher(stan);
   await publisher.publish({
     id: "123",
