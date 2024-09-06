@@ -40,7 +40,7 @@ const main = async () => {
   }
 
   app.listen(3000, () => {
-    console.log("Ticketing listening on port 3000 🚀");
+    console.log("Orders listening on port 3000 🚀");
   });
 };
 

@@ -23,6 +23,14 @@ build:
         manual:
           - dest: .
             src: "src/**/*.ts"
+    - image: briha2101/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "src/**/*.ts"
     - image: briha2101/ticketing-client
       context: client
       docker:

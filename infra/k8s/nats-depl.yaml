@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nats-depl
-  namespace: default
 spec:
   replicas: 1
   selector:
@@ -16,7 +15,6 @@ spec:
       containers:
         - name: nats
           image: nats-streaming:0.17.0
-          # you can provide custom config properties here
           args:
             [
               "-p",
