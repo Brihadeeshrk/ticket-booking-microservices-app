@@ -1,23 +1,15 @@
-import { requireAuth, validateRequest } from "@brktickets/common";
-import express, { NextFunction, Request, Response } from "express";
-import { body } from "express-validator";
-import { natsWrapper } from "../nats-wrapper";
+import { requireAuth } from "@brktickets/common";
+import express, { Request, Response } from "express";
+import { Order } from "../models/order";
 
 const router = express.Router();
 
-router.get(
-  "/api/orders",
-  requireAuth,
-  //   [
-  //     body("title").not().isEmpty().withMessage("Title is required"),
-  //     body("price")
-  //       .isFloat({ gt: 0 })
-  //       .withMessage("Price must be greater than 0"),
-  //   ],
-  validateRequest,
-  async (req: Request, res: Response, next: NextFunction) => {
-    res.send({});
-  }
-);
+router.get("/api/orders", requireAuth, async (req: Request, res: Response) => {
+  const orders = await Order.find({
+    userId: req.currentUser!.id,
+  }).populate("ticket");
+
+  res.send(orders);
+});
 
 export { router as indexOrderRouter };

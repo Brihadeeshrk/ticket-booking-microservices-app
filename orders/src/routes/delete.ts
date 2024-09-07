@@ -1,22 +1,33 @@
-import { requireAuth, validateRequest } from "@brktickets/common";
-import express, { NextFunction, Request, Response } from "express";
-import { body } from "express-validator";
-import { natsWrapper } from "../nats-wrapper";
+import {
+  NotAuthorisedError,
+  NotFoundError,
+  requireAuth,
+} from "@brktickets/common";
+import express, { Request, Response } from "express";
+import { Order, OrderStatus } from "../models/order";
 
 const router = express.Router();
 
 router.delete(
   "/api/orders/:orderId",
   requireAuth,
-  //   [
-  //     body("title").not().isEmpty().withMessage("Title is required"),
-  //     body("price")
-  //       .isFloat({ gt: 0 })
-  //       .withMessage("Price must be greater than 0"),
-  //   ],
-  validateRequest,
-  async (req: Request, res: Response, next: NextFunction) => {
-    res.send({});
+  async (req: Request, res: Response) => {
+    const orderId = req.params.orderId;
+
+    const order = await Order.findById(orderId).populate("ticket");
+
+    if (!order) {
+      throw new NotFoundError();
+    }
+
+    if (order.userId !== req.currentUser!.id) {
+      throw new NotAuthorisedError();
+    }
+
+    order.status = OrderStatus.Cancelled;
+    await order.save();
+
+    res.status(204).send(order);
   }
 );
 
