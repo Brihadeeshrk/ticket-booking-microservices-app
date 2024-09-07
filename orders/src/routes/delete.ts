@@ -5,6 +5,8 @@ import {
 } from "@brktickets/common";
 import express, { Request, Response } from "express";
 import { Order, OrderStatus } from "../models/order";
+import { natsWrapper } from "../nats-wrapper";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled";
 
 const router = express.Router();
 
@@ -26,6 +28,14 @@ router.delete(
 
     order.status = OrderStatus.Cancelled;
     await order.save();
+
+    const publisher = new OrderCancelledPublisher(natsWrapper.client);
+    await publisher.publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     res.status(204).send(order);
   }
