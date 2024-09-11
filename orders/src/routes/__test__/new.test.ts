@@ -18,6 +18,7 @@ it("returns an error if the ticket doesnt exist", async () => {
 it("returns an error if the ticket is reserved", async () => {
   const cookie = global.signin();
   const ticket = Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 200,
   });
@@ -42,6 +43,7 @@ it("reserves a ticket", async () => {
   const cookie = global.signin();
 
   const ticket = Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 200,
   });
@@ -58,6 +60,7 @@ it("emits an order created event", async () => {
   const cookie = global.signin();
 
   const ticket = Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 200,
   });
