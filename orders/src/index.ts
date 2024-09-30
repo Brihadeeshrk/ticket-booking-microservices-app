@@ -8,6 +8,7 @@ import { TicketUpdatedListener } from "./events/listeners/ticket-updated";
 import { natsWrapper } from "./nats-wrapper";
 
 const main = async () => {
+  console.log("Starting Orders...");
   if (!process.env.MONGO_URI) {
     throw new Error("MONGO_URI must be defined");
   }
